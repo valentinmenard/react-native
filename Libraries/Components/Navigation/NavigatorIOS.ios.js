@@ -17,12 +17,16 @@ var NavigationContext = require('NavigationContext');
 var React = require('React');
 var RCTNavigatorManager = require('NativeModules').NavigatorManager;
 var StyleSheet = require('StyleSheet');
+var StyleSheetPropType = require('StyleSheetPropType');
+var TextStylePropTypes = require('TextStylePropTypes');
 var StaticContainer = require('StaticContainer.react');
 var View = require('View');
 
 var requireNativeComponent = require('requireNativeComponent');
+var flattenStyle = require('flattenStyle');
 var invariant = require('invariant');
 var logError = require('logError');
+var precomputeStyle = require('precomputeStyle');
 
 var TRANSITIONER_REF = 'transitionerRef';
 
@@ -270,9 +274,15 @@ var NavigatorIOS = React.createClass({
     barTintColor: PropTypes.string,
 
     /**
-     * The text color of the navigation bar title
+     * The style of the navigation bar title
      */
-    titleTextColor: PropTypes.string,
+    titleStyle: StyleSheetPropType({
+      color: TextStylePropTypes.color,
+      fontFamily: TextStylePropTypes.fontFamily,
+      fontSize: TextStylePropTypes.fontSize,
+      fontStyle: TextStylePropTypes.fontStyle,
+      fontWeight: TextStylePropTypes.fontWeight
+    }),
 
     /**
      * A Boolean value that indicates whether the navigation bar is translucent
@@ -594,6 +604,11 @@ var NavigatorIOS = React.createClass({
     var shouldUpdateChild = this.state.updatingAllIndicesAtOrBeyond !== null &&
       this.state.updatingAllIndicesAtOrBeyond >= i;
 
+    var titleStyles = precomputeStyle(flattenStyle(this.props.titleStyle));
+    if (!titleStyles) {
+      titleStyles = {};
+    }
+
     return (
       <StaticContainer key={'nav' + i} shouldUpdate={shouldUpdateChild}>
         <RCTNavigatorItem
@@ -616,7 +631,12 @@ var NavigatorIOS = React.createClass({
           tintColor={this.props.tintColor}
           barTintColor={this.props.barTintColor}
           translucent={this.props.translucent !== false}
-          titleTextColor={this.props.titleTextColor}>
+          titleTextColor={titleStyles.color}
+          titleFontSize={titleStyles.fontSize}
+          titleFontWeight={titleStyles.fontWeight}
+          titleFontStyle={titleStyles.fontStyle}
+          titleFontFamily={titleStyles.fontFamily}
+          >
           <Component
             navigator={this.navigator}
             route={route}
