@@ -104,17 +104,24 @@ static UIView *RCTFindNavBarShadowViewInView(UIView *view)
 
     RCTFindNavBarShadowViewInView(bar).hidden = _navItem.shadowHidden;
 
+    [[UIBarButtonItem appearance] setTitleTextAttributes:textAttributes forState:UIControlStateNormal];
+
     UINavigationItem *item = self.navigationItem;
     item.title = _navItem.title;
     item.backBarButtonItem = _navItem.backButtonItem;
+    [item.backBarButtonItem setTitleTextAttributes:textAttributes forState:UIControlStateNormal];
+
     if ((item.leftBarButtonItem = _navItem.leftButtonItem)) {
       item.leftBarButtonItem.target = self;
       item.leftBarButtonItem.action = @selector(handleNavLeftButtonTapped);
+      [item.leftBarButtonItem setTitleTextAttributes:textAttributes forState:UIControlStateNormal];
     }
     if ((item.rightBarButtonItem = _navItem.rightButtonItem)) {
       item.rightBarButtonItem.target = self;
       item.rightBarButtonItem.action = @selector(handleNavRightButtonTapped);
+      [item.rightBarButtonItem setTitleTextAttributes:textAttributes forState:UIControlStateNormal];
     }
+
   }
 }
 
