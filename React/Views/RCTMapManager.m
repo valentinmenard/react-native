@@ -149,6 +149,7 @@ RCT_CUSTOM_VIEW_PROPERTY(region, MKCoordinateRegion, RCTMap)
 
   annotationView.canShowCallout = true;
   annotationView.animatesDrop = annotation.animateDrop;
+  annotationView.pinColor = annotation.color;
 
   for (NSString *side in @[@"left", @"right"]) {
     NSString *accessoryViewSelector = [NSString stringWithFormat:@"%@CalloutAccessoryView", side];

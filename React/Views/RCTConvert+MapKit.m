@@ -83,6 +83,14 @@ RCT_ENUM_CONVERTER(MKMapType, (@{
     shape.rightCalloutType = RCTPointAnnotationTypeImage;
   }
 
+  NSString* color = [RCTConvert NSString:json[@"color"]];
+  
+  if ([color isEqualToString:@"green"]) {
+    shape.color = MKPinAnnotationColorGreen;
+  } else {
+    shape.color = MKPinAnnotationColorRed;
+  }
+
   return shape;
 }
 

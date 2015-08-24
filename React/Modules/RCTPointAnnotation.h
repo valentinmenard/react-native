@@ -18,6 +18,8 @@ typedef enum{
 
 @property (nonatomic, copy) NSString *identifier;
 
+@property (nonatomic, assign) MKPinAnnotationColor color;
+
 @property (nonatomic, assign) BOOL hasLeftCallout;
 @property (nonatomic, assign) BOOL hasRightCallout;
 
