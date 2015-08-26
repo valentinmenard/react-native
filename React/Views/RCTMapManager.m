@@ -63,6 +63,22 @@ RCT_CUSTOM_VIEW_PROPERTY(region, MKCoordinateRegion, RCTMap)
     NSString *title = view.annotation.title ?: @"";
     NSString *subtitle = view.annotation.subtitle ?: @"";
 
+    for (NSString *side in @[@"left", @"right"]) {
+      NSString *accessoryViewSelector = [NSString stringWithFormat:@"%@CalloutAccessoryView", side];
+      NSString *typeSelector = [NSString stringWithFormat:@"%@CalloutType", side];
+      NSString *hasCheckSelector = [NSString stringWithFormat:@"has%@Callout", [side capitalizedString]];
+      NSString *configSelector = [NSString stringWithFormat:@"%@CalloutConfig", side];
+
+      [view setValue:nil forKey:accessoryViewSelector];
+      if ([annotation valueForKey:hasCheckSelector]) {
+        [view setValue:[UIButton buttonWithType:UIButtonTypeDetailDisclosure] forKey:accessoryViewSelector];
+
+        if ([[annotation valueForKey:typeSelector] integerValue] == RCTPointAnnotationTypeImage) {
+          [view setValue:[self generateCalloutImageAccessory:[annotation valueForKey:configSelector]] forKey:accessoryViewSelector];
+        }
+      }
+    }
+
     NSDictionary *event = @{
                             @"target": mapView.reactTag,
                             @"action": @"annotation-click",
@@ -150,22 +166,6 @@ RCT_CUSTOM_VIEW_PROPERTY(region, MKCoordinateRegion, RCTMap)
   annotationView.canShowCallout = true;
   annotationView.animatesDrop = annotation.animateDrop;
   annotationView.pinColor = annotation.color;
-
-  for (NSString *side in @[@"left", @"right"]) {
-    NSString *accessoryViewSelector = [NSString stringWithFormat:@"%@CalloutAccessoryView", side];
-    NSString *typeSelector = [NSString stringWithFormat:@"%@CalloutType", side];
-    NSString *hasCheckSelector = [NSString stringWithFormat:@"has%@Callout", [side capitalizedString]];
-    NSString *configSelector = [NSString stringWithFormat:@"%@CalloutConfig", side];
-
-    [annotationView setValue:nil forKey:accessoryViewSelector];
-    if ([annotation valueForKey:hasCheckSelector]) {
-      [annotationView setValue:[UIButton buttonWithType:UIButtonTypeDetailDisclosure] forKey:accessoryViewSelector];
-
-      if ([[annotation valueForKey:typeSelector] integerValue] == RCTPointAnnotationTypeImage) {
-        [annotationView setValue:[self generateCalloutImageAccessory:[annotation valueForKey:configSelector]] forKey:accessoryViewSelector];
-      }
-    }
-  }
 
   return annotationView;
 }
